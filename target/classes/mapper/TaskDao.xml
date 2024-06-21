@@ -2,25 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.project.task.dao.TaskDao">
+<mapper namespace="com.project.study.dao.TaskDao">
 
-    <insert id="createNewTask" parameterType="com.project.task.dto.TaskDto" useGeneratedKeys="true" keyProperty="id">
-        insert into task.assignment
+    <insert id="createNewEssay" parameterType="com.project.study.dto.EssayDto" useGeneratedKeys="true" keyProperty="id">
+        insert into study.e_essay
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="taskName != null and taskName != ''">task_name,</if>
-            <if test="description != null and description != ''">description,</if>
-            <if test="requestFor != null and requestFor != ''">request_for,</if>
-            <if test="requestBy != null and requestBy!= ''">request_by,</if>
+            <if test="studentId != null and studentId != ''">student_id,</if>
+            <if test="teacherId != null and teacherId != ''">teacher_id,</if>
+            <if test="course != null and course != ''">course,</if>
+            <if test="question != null and question!= ''">question,</if>
             <if test="status != null and status!= ''">status,</if>
             <if test="taskApplyTime != null">task_apply_time,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateTime != null ">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="taskName != null and taskName != ''">#{taskName},</if>
-            <if test="description != null and description != ''">#{description},</if>
-            <if test="requestFor != null and requestFor != ''">#{requestFor},</if>
-            <if test="requestBy != null and requestBy !=''">#{requestBy},</if>
+            <if test="studentId != null and studentId != ''">#{studentId},</if>
+            <if test="teacherId != null and teacherId != ''">#{teacherId},</if>
+            <if test="course != null and course != ''">#{course},</if>
+            <if test="question != null and question !=''">#{question},</if>
             <if test="status != null and status !=''">#{status},</if>
             <if test="taskApplyTime != null ">#{taskApplyTime},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -28,31 +28,35 @@
         </trim>
     </insert>
 
-    <select id="getAllTask" resultType="com.project.task.dto.TaskDto" parameterType="com.project.task.dto.TaskDto">
-        SELECT  id as taskId,
-                task_name as taskName,
-                description as description,
-                request_for as requestFor,
-                request_by as requestBy,
+    <select id="getAllEssay" resultType="com.project.study.dto.EssayDto" parameterType="com.project.study.dto.EssayDto">
+        SELECT  id as essayId,
+                student_id as studentId,
+                teacher_id as teacherId,
+                course as course,
+                question as question,
+                answer as answer,
                 status as status,
                 task_apply_time as taskApplyTime,
                 task_completion_time as taskCompletionTime,
                 create_time as createTime,
                 update_time as updateTime
-        FROM task.assignment
+        FROM study.e_essay
         <where>
             1=1
-            <if test="taskId != null and taskId != '' ">
-             and id = #{taskId}
+            <if test="essayId != null and essayId != '' ">
+             and id = #{essayId}
             </if>
-            <if test="taskName != null and taskName != ''">
-                and task_name like concat(concat("%",#{taskName}),"%")
+            <if test="studentId != null and studentId != '' ">
+                and student_id = #{studentId}
             </if>
-            <if test="requestFor != null and requestFor != ''">
-                and request_for = #{requestFor}
+            <if test="teacherId != null and teacherId != '' ">
+                and teacher_id = #{teacherId}
             </if>
-            <if test="requestBy != null and requestBy != ''">
-                and request_by = #{requestBy}
+            <if test="course != null and course != ''">
+                and course like concat(concat("%",#{course}),"%")
+            </if>
+            <if test="question != null and question != ''">
+                and question like concat(concat("%",#{question}),"%")
             </if>
             <if test="status != null and status != ''">
                 and status = #{status}
@@ -61,20 +65,27 @@
         order by id desc
     </select>
 
-    <update id="markTaskAsCompleted" parameterType="com.project.task.dto.TaskDto">
-        update task.assignment
+    <update id="markEssayAsCompleted" parameterType="com.project.study.dto.EssayDto">
+        update study.e_essay
         <set>
             <if test="status != null and status != ''">
                  status = #{status},
             </if>
-            <if test="completionBy != null and completionBy != ''">
-                completion_by = #{completionBy},
+        </set>
+        WHERE id = #{essayId}
+    </update>
+
+    <update id="sendEssayAnswer" parameterType="com.project.study.dto.EssayDto">
+        update study.e_essay
+        <set>
+            <if test="answer != null ">
+                answer = #{answer},
             </if>
             <if test="taskCompletionTime != null ">
                 task_completion_time = #{taskCompletionTime},
             </if>
         </set>
-        WHERE id = #{taskId}
+        WHERE id = #{essayId}
     </update>
 
 </mapper>

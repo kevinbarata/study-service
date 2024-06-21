@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.study.dao.LearningDao">
+
+    <insert id="createELearningMaterial" parameterType="com.project.study.dto.ELearningDto" useGeneratedKeys="true" keyProperty="id">
+        insert into study.e_learning
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null and teacherId != ''">teacher_id,</if>
+            <if test="course != null and course != ''">course,</if>
+            <if test="subject != null and subject != ''">subject,</if>
+            <if test="text != null and text!= ''">text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null and teacherId != ''">#{teacherId},</if>
+            <if test="course != null and course != ''">#{course},</if>
+            <if test="subject != null and subject != ''">#{subject},</if>
+            <if test="text != null and text !=''">#{text},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <select id="getAllMaterial" resultType="com.project.study.dto.ELearningDto" parameterType="com.project.study.dto.ELearningDto">
+        SELECT  id as learningId,
+                teacher_id as teacherId,
+                course as course,
+                subject as subject,
+                text as text,
+                create_time as createTime,
+                update_time as updateTime
+        FROM study.e_learning
+        <where>
+            1=1
+            <if test="learningId != null and learningId != '' ">
+             and id = #{learningId}
+            </if>
+            <if test="subject != null and subject != ''">
+                and subject like concat(concat("%",#{subject}),"%")
+            </if>
+            <if test="course != null and course != ''">
+                and course = #{course}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+</mapper>
